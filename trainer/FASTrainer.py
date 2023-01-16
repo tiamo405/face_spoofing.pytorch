@@ -5,7 +5,7 @@ import torchvision
 from trainer.base import BaseTrainer
 from utils.meters import AvgMeter
 from utils.eval import add_visualization_to_tensorboard, predict, calc_accuracy
-
+from tqdm import tqdm
 
 class FASTrainer(BaseTrainer):
     def __init__(self, cfg, network, optimizer, criterion, lr_scheduler, device, trainloader, valloader, writer):
@@ -49,7 +49,8 @@ class FASTrainer(BaseTrainer):
         self.train_loss_metric.reset(epoch)
         self.train_acc_metric.reset(epoch)
 
-        for i, (img, depth_map, label) in enumerate(self.trainloader):
+        # for i, (img, depth_map, label) in tqdm(self.trainloader):
+        for (img, depth_map, label) in tqdm(self.trainloader):
             img, depth_map, label = img.to(self.device), depth_map.to(self.device), label.to(self.device)
             net_depth_map, _, _, _, _, _ = self.network(img)
             self.optimizer.zero_grad()
